@@ -1,0 +1,10 @@
+Checks: '
+  -clang-diagnostic-return-type,
+  -clang-diagnostic-unknown-attributes,
+  -clang-diagnostic-unused-parameter,
+  misc-*,
+  -misc-include-cleaner,
+  -misc-const-correctness,
+  -misc-unused-parameters,
+  -misc-non-private-member-variables-in-classes
+'
