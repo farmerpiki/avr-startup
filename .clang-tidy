@@ -6,5 +6,15 @@ Checks: '
   -misc-include-cleaner,
   -misc-const-correctness,
   -misc-unused-parameters,
-  -misc-non-private-member-variables-in-classes
+  -misc-use-internal-linkage,
+  -misc-non-private-member-variables-in-classes,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  cert-*,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -cppcoreguidelines-avoid-do-while,
+  -cppcoreguidelines-pro-type-cstyle-cast,
 '
+SystemHeaders: false

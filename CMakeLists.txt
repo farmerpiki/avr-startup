@@ -20,6 +20,7 @@ target_sources(${PROJECT_NAME}
   PRIVATE FILE_SET modules TYPE CXX_MODULES FILES
     io.cxx
     tinyarray.cxx
+    nonstd.cxx
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

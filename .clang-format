@@ -166,5 +166,5 @@ StatementMacros: []
 TypeNames: []
 TypenameMacros: []
 TabWidth: 4
-UseTab: Always
+UseTab: ForContinuationAndIndentation
 WhitespaceSensitiveMacros: []
