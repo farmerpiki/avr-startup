@@ -21,6 +21,7 @@ target_sources(${PROJECT_NAME}
     io.cxx
     tinyarray.cxx
     nonstd.cxx
+    components.cxx
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
