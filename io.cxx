@@ -90,7 +90,7 @@ export consteval pin_t operator""_pin(char const *pin, [[maybe_unused]] size_t l
 export class ioport_masks {
 public:
 	template<uint8_t N>
-	[[gnu::always_inline]] inline constexpr explicit ioport_masks(tinyarray<pin_t, N> pins) noexcept {
+	[[gnu::always_inline]] inline consteval explicit ioport_masks(tinyarray<pin_t, N> pins) noexcept {
 		for (auto pin: pins) {
 			if (pin.get_port_index() < max_port_index) {
 				masks[pin.get_port_index()] |= pin.mask();
