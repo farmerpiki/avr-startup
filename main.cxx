@@ -2,7 +2,7 @@
 #include <util/delay.h>
 
 // next define required to include avr/sleep.h
-#define SM1 1 // NOLINT(cppcoreguidelines-macro-usage)
+#define SM1 1
 #include <avr/sleep.h>
 
 import io;

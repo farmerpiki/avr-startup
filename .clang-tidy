@@ -17,4 +17,8 @@ Checks: '
   -cppcoreguidelines-avoid-do-while,
   -cppcoreguidelines-pro-type-cstyle-cast,
 '
+CheckOptions:
+  - key: cppcoreguidelines-macro-usage.AllowedRegexp
+    value: '^SM0$|^SM1$|^SM2$'
+
 SystemHeaders: false
