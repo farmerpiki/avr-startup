@@ -28,28 +28,28 @@ export template<typename T, uint8_t N> struct tinyarray {
 	[[nodiscard]] inline constexpr size_type size() const noexcept { return N; }
 	[[nodiscard]] inline constexpr bool is_empty() const noexcept { return size() == 0; }
 
-	[[nodiscard]] constexpr reference operator[](size_type n) noexcept {
+	[[nodiscard]] inline constexpr reference operator[](size_type n) noexcept {
 		if consteval {
 			assert(n < this->size());
 		}
 		return m_data[n];
 	}
 
-	[[nodiscard]] constexpr const_reference operator[](size_type n) const noexcept {
+	[[nodiscard]] inline constexpr const_reference operator[](size_type n) const noexcept {
 		if consteval {
 			assert(n < this->size());
 		}
 		return m_data[n];
 	}
 
-	[[nodiscard]] constexpr reference front() noexcept {
+	[[nodiscard]] inline constexpr reference front() noexcept {
 		if consteval {
 			assert(!this->is_empty());
 		}
 		return m_data[(size_type)0];
 	}
 
-	[[nodiscard]] constexpr const_reference front() const noexcept {
+	[[nodiscard]] inline constexpr const_reference front() const noexcept {
 		if consteval {
 			assert(!this->is_empty());
 		}
@@ -71,8 +71,7 @@ export template<typename T, uint8_t N> struct tinyarray {
 	}
 
 	[[nodiscard]] inline constexpr pointer data() noexcept { return static_cast<pointer>(m_data); }
-
-	[[nodiscard]] constexpr const_pointer data() const noexcept { return static_cast<const_pointer>(m_data); }
+	[[nodiscard]] inline constexpr const_pointer data() const noexcept { return static_cast<const_pointer>(m_data); }
 };
 
 export template<typename T>

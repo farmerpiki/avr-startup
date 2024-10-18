@@ -52,13 +52,15 @@ private:
 		tinyarray<uint8_t, 8>{(1 << 0), (1 << 1), (1 << 2), (1 << 3), (1 << 4), (1 << 5), (1 << 6), (1 << 7)};
 	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 
-	[[nodiscard]] constexpr VPORT_t &vport() const noexcept {
+	[[nodiscard]] inline constexpr VPORT_t &vport() const noexcept {
 		return *(port_index + &VPORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
-	[[nodiscard]] constexpr PORT_t &port() const noexcept {
+
+	[[nodiscard]] inline constexpr PORT_t &port() const noexcept {
 		return *(port_index + &PORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
-	[[nodiscard]] constexpr register8_t &pin_ctrl() const noexcept {
+
+	[[nodiscard]] inline constexpr register8_t &pin_ctrl() const noexcept {
 		return *(&(port().PIN0CTRL) + pin_index); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
 
