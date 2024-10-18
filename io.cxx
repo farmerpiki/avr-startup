@@ -11,6 +11,7 @@ constexpr uint8_t max_port_index = 6;
 
 [[nodiscard]] inline constexpr VPORT_t &vport(uint8_t port_index) noexcept {
 	assert(port_index < max_port_index);
+	// NOLINTNEXTLINE(clang-analyzer-core.uninitialized.UndefReturn)
 	return *(port_index + &VPORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
