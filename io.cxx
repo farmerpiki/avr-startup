@@ -7,6 +7,18 @@ module;
 export module io;
 import tinyarray;
 
+constexpr uint8_t max_port_index = 6;
+
+[[nodiscard]] inline constexpr VPORT_t &vport(uint8_t port_index) noexcept {
+	assert(port_index < max_port_index);
+	return *(port_index + &VPORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+}
+
+[[nodiscard]] inline constexpr PORT_t &port(uint8_t port_index) noexcept {
+	assert(port_index < max_port_index);
+	return *(port_index + &PORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+}
+
 export struct pin_t {
 public:
 	pin_t(pin_t const &rhs) = default;
@@ -51,14 +63,8 @@ private:
 	static constexpr auto masks =
 		tinyarray<uint8_t, 8>{(1 << 0), (1 << 1), (1 << 2), (1 << 3), (1 << 4), (1 << 5), (1 << 6), (1 << 7)};
 	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
-
-	[[nodiscard]] inline constexpr VPORT_t &vport() const noexcept {
-		return *(port_index + &VPORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-	}
-
-	[[nodiscard]] inline constexpr PORT_t &port() const noexcept {
-		return *(port_index + &PORTA); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-	}
+	[[nodiscard]] inline constexpr VPORT_t &vport() const noexcept { return ::vport(port_index); }
+	[[nodiscard]] inline constexpr PORT_t &port() const noexcept { return ::port(port_index); }
 
 	[[nodiscard]] inline constexpr register8_t &pin_ctrl() const noexcept {
 		return *(&(port().PIN0CTRL) + pin_index); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
