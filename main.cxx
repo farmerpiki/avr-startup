@@ -8,32 +8,20 @@
 import io;
 import tinyarray;
 
-namespace {
-void deep_sleep() {
-	sleep_cpu();
-}
-} // namespace
+constexpr auto update_interval = 10.0;
+constexpr auto water_overflow_sensor{"PB0"_pin};
+constexpr auto rain_sensor{"PB2"_pin};
+constexpr auto light_sensor{"PB5"_pin};
+constexpr tinyarray sensors{water_overflow_sensor, rain_sensor, light_sensor};
+constexpr ioport_masks sensor_masks{sensors};
 
 [[noreturn]] int main(void) {
-	constexpr auto update_interval = 10.0;
-
-	constexpr auto water_overflow_sensor{"PB0"_pin};
-	constexpr auto rain_sensor{"PB2"_pin};
-	constexpr auto light_sensor{"PB5"_pin};
-
 	// TODO: setup sleep properly, and set up a wakeup source
 	sleep_enable();
 
-	constexpr tinyarray sensors{water_overflow_sensor, rain_sensor, light_sensor};
+	mass_make_input_with_pullup(sensor_masks);
 
-	for (auto const &i: sensors) {
-		i.make_input_with_pullup();
-		// wait a bit
-		if (i.is_set()) {
-			// do stuff
-			deep_sleep(); // placeholder
-		}
-	}
+	_delay_ms(update_interval);
 
 	constexpr auto green_led{"PC4"_pin};
 	green_led.make_output();

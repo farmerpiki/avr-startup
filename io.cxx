@@ -87,56 +87,48 @@ export consteval pin_t operator""_pin(char const *pin, [[maybe_unused]] size_t l
 	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
-export constexpr uint8_t ports_size = 6;
-
-template<uint8_t N> inline constexpr tinyarray<uint8_t, ports_size> calculate_ioport_masks(tinyarray<pin_t, N> pins) {
-	tinyarray<uint8_t, ports_size> masks{};
-	for (auto pin: pins) {
-		if (pin.get_port_index() < ports_size) {
-			masks[pin.get_port_index()] |= pin.mask();
+export class ioport_masks {
+public:
+	template<uint8_t N>
+	[[gnu::always_inline]] inline constexpr explicit ioport_masks(tinyarray<pin_t, N> pins) noexcept {
+		for (auto pin: pins) {
+			if (pin.get_port_index() < max_port_index) {
+				masks[pin.get_port_index()] |= pin.mask();
+			}
 		}
 	}
-	return masks;
-}
 
-export template<uint8_t N> inline void setup_as_output(tinyarray<pin_t, N> pins) {
-	constexpr auto masks = calculate_ioport_masks(pins);
-	for (uint8_t port = 0; auto mask: masks) {
-		(*(port + &VPORTA)).DIR |= mask; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-		++port;
+	[[nodiscard]] constexpr tinyarray<uint8_t, max_port_index> const &value() const noexcept { return masks; }
+
+private:
+	tinyarray<uint8_t, max_port_index> masks{};
+};
+
+export void mass_make_output(ioport_masks const &masks) {
+	for (uint8_t port_index = 0; auto mask: masks.value()) {
+		if (mask) {
+			vport(port_index).DIR |= mask;
+		}
+		++port_index;
 	}
 }
 
-export template<uint8_t N> inline void setup_as_input(tinyarray<pin_t, N> pins) {
-	constexpr auto masks = calculate_ioport_masks(pins);
-	for (uint8_t port = 0; auto mask: masks) {
-		(*(port + &VPORTA)).DIR &= ~mask; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-		++port;
+export void mass_make_input(ioport_masks const &masks) {
+	for (uint8_t port_index = 0; auto mask: masks.value()) {
+		if (mask) {
+			vport(port_index).DIR &= ~mask;
+		}
+		++port_index;
 	}
 }
 
-export template<uint8_t N> inline void setup_as_pullup_input(tinyarray<pin_t, N> pins) {
-	auto const masks = calculate_ioport_masks(pins);
-	for (auto &pin: pins) {
-		//(*(pin.get_port_index() + &PORTA)).PIN0CTRL + pin.get_pin_index() |=
-		//	PORT_PULLUPEN_bm; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-		(*(pin.get_port_index() + &PORTA)).PIN0CTRL |=
-			PORT_PULLUPEN_bm; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+export void mass_make_input_with_pullup(ioport_masks const &masks) {
+	for (uint8_t port_index = 0; auto mask: masks.value()) {
+		if (mask) {
+			port(port_index).PINCONFIG = PORT_PULLUPEN_bm;
+			port(port_index).PINCTRLSET = mask;
+			vport(port_index).DIR &= ~mask;
+		}
+		++port_index;
 	}
-	for (uint8_t port = 0; auto mask: masks) {
-		(*(port + &VPORTA)).DIR &= ~mask; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-		++port;
-	}
-}
-
-export inline void set_pin(pin_t pin) {
-	pin.set();
-}
-
-export inline void clear_pin(pin_t pin) {
-	pin.clear();
-}
-
-export inline bool read_pin(pin_t pin) {
-	return pin.is_set();
 }
