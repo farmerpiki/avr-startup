@@ -21,11 +21,11 @@ constexpr uint8_t max_port_index = 6;
 
 export struct pin_t {
 public:
-	pin_t(pin_t const &rhs) = default;
+	consteval pin_t(pin_t const &rhs) noexcept = default;
 	pin_t(pin_t &&rhs) = delete;
 	pin_t &operator=(pin_t const &rhs) = delete;
 	pin_t &operator=(pin_t &&rhs) = delete;
-	~pin_t() = default;
+	~pin_t() noexcept = default;
 
 	inline void make_output() const noexcept { vport().DIR |= mask(); }
 	inline void make_input() const noexcept { vport().DIR &= ~mask(); }
@@ -55,7 +55,7 @@ public:
 	[[nodiscard]] constexpr uint8_t get_pin_index() const noexcept { return pin_index; }
 
 private:
-	constexpr explicit pin_t(uint8_t port_index, uint8_t pin_index) noexcept
+	consteval explicit pin_t(uint8_t port_index, uint8_t pin_index) noexcept
 		: port_index{port_index}
 		, pin_index{pin_index} {}
 
