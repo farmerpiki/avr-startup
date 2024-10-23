@@ -7,6 +7,10 @@ module;
 export module io;
 import tinyarray;
 
+[[nodiscard]] constexpr uint8_t bitwise_not(uint8_t data) {
+	return ~data;
+}
+
 constexpr uint8_t max_port_index = 6;
 
 [[nodiscard]] inline constexpr VPORT_t &vport(uint8_t port_index) noexcept {
@@ -29,11 +33,11 @@ public:
 	~pin_t() noexcept = default;
 
 	inline void make_output() const noexcept { vport().DIR |= mask(); }
-	inline void make_input() const noexcept { vport().DIR &= ~mask(); }
+	inline void make_input() const noexcept { vport().DIR &= bitwise_not(mask()); }
 
 	inline void make_input_with_pullup() const noexcept {
-		vport().DIR &= ~mask();
-		pin_ctrl() |= PORT_PULLUPEN_bm;
+		vport().DIR &= bitwise_not(mask());
+		pin_ctrl() |= static_cast<uint8_t>(PORT_PULLUPEN_bm);
 	}
 
 	inline void set() const noexcept { vport().OUT |= mask(); }
@@ -44,10 +48,10 @@ public:
 			clear();
 		}
 	}
-	inline void clear() const noexcept { vport().OUT &= ~mask(); }
+	inline void clear() const noexcept { vport().OUT &= bitwise_not(mask()); }
 	inline void toggle() const noexcept { vport().OUT ^= mask(); }
 
-	[[nodiscard]] inline operator bool() const noexcept { return is_set(); }
+	[[nodiscard]] inline explicit operator bool() const noexcept { return is_set(); }
 	[[nodiscard]] inline bool is_set() const noexcept { return (vport().IN | mask()) == mask(); }
 	[[nodiscard]] inline bool is_clear() const noexcept { return (vport().IN & mask()) == 0; }
 
@@ -61,8 +65,15 @@ private:
 		, pin_index{pin_index} {}
 
 	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
-	static constexpr auto masks =
-		tinyarray<uint8_t, 8>{(1 << 0), (1 << 1), (1 << 2), (1 << 3), (1 << 4), (1 << 5), (1 << 6), (1 << 7)};
+	static constexpr auto masks = tinyarray<uint8_t, 8>{
+		(1U << 0U),
+		(1U << 1U),
+		(1U << 2U),
+		(1U << 3U),
+		(1U << 4U),
+		(1U << 5U),
+		(1U << 6U),
+		(1U << 7U)};
 	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
 	[[nodiscard]] inline constexpr VPORT_t &vport() const noexcept { return ::vport(port_index); }
 	[[nodiscard]] inline constexpr PORT_t &port() const noexcept { return ::port(port_index); }
@@ -107,7 +118,7 @@ private:
 
 export void mass_make_output(ioport_masks const &masks) {
 	for (uint8_t port_index = 0; auto mask: masks.value()) {
-		if (mask) {
+		if (mask != 0U) {
 			vport(port_index).DIR |= mask;
 		}
 		++port_index;
@@ -116,8 +127,8 @@ export void mass_make_output(ioport_masks const &masks) {
 
 export void mass_make_input(ioport_masks const &masks) {
 	for (uint8_t port_index = 0; auto mask: masks.value()) {
-		if (mask) {
-			vport(port_index).DIR &= ~mask;
+		if (mask != 0U) {
+			vport(port_index).DIR &= bitwise_not(mask);
 		}
 		++port_index;
 	}
@@ -125,10 +136,10 @@ export void mass_make_input(ioport_masks const &masks) {
 
 export void mass_make_input_with_pullup(ioport_masks const &masks) {
 	for (uint8_t port_index = 0; auto mask: masks.value()) {
-		if (mask) {
+		if (mask != 0U) {
 			port(port_index).PINCONFIG = PORT_PULLUPEN_bm;
 			port(port_index).PINCTRLSET = mask;
-			vport(port_index).DIR &= ~mask;
+			vport(port_index).DIR &= bitwise_not(mask);
 		}
 		++port_index;
 	}

@@ -15,9 +15,9 @@ constexpr auto light_sensor{"PB5"_pin};
 constexpr tinyarray sensors{water_overflow_sensor, rain_sensor, light_sensor};
 constexpr ioport_masks sensor_masks{sensors};
 
-[[noreturn]] int main(void) {
+[[noreturn]] int main() {
 	// TODO: setup sleep properly, and set up a wakeup source
-	sleep_enable();
+	sleep_enable(); // NOLINT(performance-no-int-to-ptr)
 
 	mass_make_input_with_pullup(sensor_masks);
 

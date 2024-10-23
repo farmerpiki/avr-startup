@@ -7,7 +7,7 @@ export module tinyarray;
 import nonstd;
 
 export template<typename T, uint8_t N> struct tinyarray {
-	typedef T value_type;
+	using value_type = T;
 	using pointer = value_type *;
 	using const_pointer = value_type const *;
 	using reference = value_type &;
@@ -16,7 +16,7 @@ export template<typename T, uint8_t N> struct tinyarray {
 	using const_iterator = value_type const *;
 	using size_type = uint8_t;
 
-	T m_data[N];
+	T m_data[N]; // NOLINT(hicpp-avoid-c-arrays, modernize-avoid-c-arrays)
 
 	[[nodiscard]] inline constexpr iterator begin() noexcept { return iterator(data()); }
 	[[nodiscard]] inline constexpr const_iterator begin() const noexcept { return const_iterator(data()); }
@@ -28,6 +28,7 @@ export template<typename T, uint8_t N> struct tinyarray {
 	[[nodiscard]] inline constexpr size_type size() const noexcept { return N; }
 	[[nodiscard]] inline constexpr bool is_empty() const noexcept { return size() == 0; }
 
+	// NOLINTNEXTLINE(fuchsia-overloaded-operator)
 	[[nodiscard]] inline constexpr reference operator[](size_type n) noexcept {
 		if consteval {
 			assert(n < this->size());
@@ -35,6 +36,7 @@ export template<typename T, uint8_t N> struct tinyarray {
 		return m_data[n];
 	}
 
+	// NOLINTNEXTLINE(fuchsia-overloaded-operator)
 	[[nodiscard]] inline constexpr const_reference operator[](size_type n) const noexcept {
 		if consteval {
 			assert(n < this->size());
@@ -46,14 +48,14 @@ export template<typename T, uint8_t N> struct tinyarray {
 		if consteval {
 			assert(!this->is_empty());
 		}
-		return m_data[(size_type)0];
+		return m_data[static_cast<size_type>(0)];
 	}
 
 	[[nodiscard]] inline constexpr const_reference front() const noexcept {
 		if consteval {
 			assert(!this->is_empty());
 		}
-		return m_data[(size_type)0];
+		return m_data[static_cast<size_type>(0)];
 	}
 
 	[[nodiscard]] inline constexpr reference back() noexcept {
