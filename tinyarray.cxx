@@ -16,7 +16,7 @@ export template<typename T, uint8_t N> struct tinyarray {
 	using const_iterator = value_type const *;
 	using size_type = uint8_t;
 
-	T m_data[N]; // NOLINT(hicpp-avoid-c-arrays, modernize-avoid-c-arrays)
+	T m_data[N]; // NOLINT(modernize-avoid-c-arrays)
 
 	[[nodiscard]] inline constexpr iterator begin() noexcept { return iterator(data()); }
 	[[nodiscard]] inline constexpr const_iterator begin() const noexcept { return const_iterator(data()); }
